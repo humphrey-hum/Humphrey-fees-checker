@@ -6,13 +6,6 @@
      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <title>Document</title>
 </head>
-<body>
-    <!DOCTYPE html>
-<html>
-<head>
-  <title>Fee Checker</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
 <body class="bg-light p-4">
 
 <div class="container bg-white p-4 rounded shadow">
@@ -20,21 +13,28 @@
   <p>Total Fees: <b>80,000 UGX</b></p>
 
   <!-- FORM -->
-  <div class="row g-2 mb-3">
-    <div class="col-8">
-      <input type="number" id="amountPaid" class="form-control" placeholder="Enter Amount Paid e.g 350000">
-    </div>
-    <div class="col-4">
-      <button onclick="addEntry()" class="btn btn-primary w-100">Check & Add</button>
-    </div>
-  </div>
+   <form>
+      <div class="row g-2 mb-3">
+        <div class="col-8">
+          <input type="text" id="studentName" class="form-control" placeholder="Enter students name">
+        </div>
+        <div class="col-8">
+          <input type="number" id="amountPaid" class="form-control" placeholder="Enter Amount Paid e.g 350000">
+        </div>
+        <div class="col-4">
+          <button type="button" onclick="addEntry()" class="btn btn-primary w-100">Check & Add</button>
+        </div>
+      </div>
+   </form>
+  
 
-  <div id="alertBox" class="alert d-none"></div>
+<div id="alertBox" class="alert d-none"></div>
 
   <!-- TABLE -->
   <table class="table table-bordered">
     <thead class="table-light">
       <tr>
+        <th>Students Name</th>
         <th>Amount paid</th>
         <th>Balance</th>
         <th>Decision message</th>
@@ -43,6 +43,18 @@
     <tbody id="feesBody"></tbody>
   </table>
 </div>
+
+<h2>Why do we use Number</h2>
+<p>So that it changes from being a string and the browser interpretes it as a number </p>
+
+<h3>Which branch runs at exactly 1000000 for S5?</h3>
+<p>The overpayment / excess branch</p>
+
+<h4>Difference between a balance and an excess?</h4>
+<p>Balance: You paid LESS than total fee cost. Formula: <br>Balance = Cost - Amount Paid</br></p>
+<p>Excess: You paid MORE than cost.<br> Formula: Excess = Paid - Cost</br></p>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
 let schoolFees = 80000;
@@ -53,21 +65,28 @@ function checkFee(amount){
   let alertClass;
 
   if(amount < schoolFees){
-    message = `Balance due UGX: ${balance}`;
+    message = "Balance due UGX: " + balance; 
     alertClass = "alert-warning"; // YELLOW - underpaid
   } else if(amount == schoolFees){
     message = "Fully paid";
     alertClass = "alert-success"; // GREEN - exact
   } else {
-    message = `Overpayment UGX: ${Math.abs(balance)}`;
+    message = "Overpayment UGX: " + Math.abs(balance);
     alertClass = "alert-info"; // BLUE - excess
   }
   return { balance, message, alertClass };
 }
 
 function addEntry() {
+  let studentName = document.getElementById("studentName").value.trim();
   let amount = Number(document.getElementById("amountPaid").value);
   
+  if (!studentName) {
+    alert("Please enter the student's name");
+    document.getElementById("studentName").focus();
+    return;
+  }
+
   if (!amount) {
     alert("Please enter amount");
     return;
@@ -77,17 +96,18 @@ function addEntry() {
 
   // --- ALERT PART ---
   let alertBox = document.getElementById("alertBox");
-  alertBox.className = `alert ${result.alertClass}`; // apply color
+  alertBox.className = "alert " + result.alertClass; // apply color
   alertBox.textContent = result.message;
   alertBox.classList.remove("d-none");
 
 
   // Add row to table
-  let row = `<tr>
-    <td>${amount}</td>
-    <td>${result.balance}</td>
-    <td>${result.message}</td>
-  </tr>`;
+  let row = "<tr>" +
+    "<td>" + studentName + "</td>" +
+    "<td>" + amount + "</td>" +
+    "<td>" + result.balance + "</td>" +
+    "<td>" + result.message + "</td>" +
+  "</tr>";
   
   document.getElementById("feesBody").innerHTML += row;
   
@@ -95,6 +115,7 @@ function addEntry() {
   console.log(amount + " | " + result.balance + " | " + result.message);
   
   document.getElementById("amountPaid").value = "";
+  document.getElementById("studentName").value = "";
 }
 
 // Add your 3 screenshot entries automatically when page loads
@@ -106,10 +127,6 @@ window.onload = function() {
 }
 </script>
 
-</body>
-</html>
 
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
